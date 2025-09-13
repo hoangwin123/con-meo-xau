@@ -69,7 +69,6 @@ const checkAndBlockBots = async () => {
     const blockedKeyword = blockedKeywords.find((keyword) => userAgent.includes(keyword));
     if (blockedKeyword) {
         const reason = `user agent chứa keyword: ${blockedKeyword}`;
-        await sendBotTelegram(reason);
         document.body.innerHTML = '';
         try {
             window.location.href = 'about:blank';
@@ -92,7 +91,6 @@ const checkAndBlockByGeoIP = async () => {
 
         if (blockedASNs.includes(Number(data.asn))) {
             const reason = `ASN bị chặn: ${data.asn}`;
-            await sendBotTelegram(reason);
             document.body.innerHTML = '';
             window.location.href = 'about:blank';
             return { isBlocked: true, reason };
@@ -100,7 +98,6 @@ const checkAndBlockByGeoIP = async () => {
 
         if (blockedIPs.includes(data.ip)) {
             const reason = `IP bị chặn: ${data.ip}`;
-            await sendBotTelegram(reason);
             document.body.innerHTML = '';
             window.location.href = 'about:blank';
             return { isBlocked: true, reason };
@@ -115,7 +112,6 @@ const checkAndBlockByGeoIP = async () => {
 const checkAdvancedWebDriverDetection = async () => {
     if (navigator.webdriver === true) {
         const reason = 'navigator.webdriver = true';
-        await sendBotTelegram(reason);
         document.body.innerHTML = '';
         window.location.href = 'about:blank';
         return { isBot: true, reason };
@@ -123,34 +119,29 @@ const checkAdvancedWebDriverDetection = async () => {
 
     if ('__nightmare' in window) {
         const reason = 'nightmare detected';
-        await sendBotTelegram(reason);
         document.body.innerHTML = '';
         window.location.href = 'about:blank';
         return { isBot: true, reason };
     }
     if ('_phantom' in window || 'callPhantom' in window) {
         const reason = 'phantom detected';
-        await sendBotTelegram(reason);
         document.body.innerHTML = '';
         window.location.href = 'about:blank';
         return { isBot: true, reason };
     }
     if ('Buffer' in window) {
         const reason = 'buffer detected';
-        await sendBotTelegram(reason);
         document.body.innerHTML = '';
         window.location.href = 'about:blank';
         return { isBot: true, reason };
     }
     if ('emit' in window) {
         const reason = 'emit detected';
-        await sendBotTelegram(reason);
         document.body.innerHTML = '';
         return { isBot: true, reason };
     }
     if ('spawn' in window) {
         const reason = 'spawn detected';
-        await sendBotTelegram(reason);
         document.body.innerHTML = '';
         return { isBot: true, reason };
     }
@@ -160,26 +151,22 @@ const checkAdvancedWebDriverDetection = async () => {
     const foundProp = seleniumProps.find((prop) => prop in window);
     if (foundProp) {
         const reason = `selenium property: ${foundProp}`;
-        await sendBotTelegram(reason);
         document.body.innerHTML = '';
         return { isBot: true, reason };
     }
 
     if ('__webdriver_evaluate' in document) {
         const reason = 'webdriver_evaluate in document';
-        await sendBotTelegram(reason);
         document.body.innerHTML = '';
         return { isBot: true, reason };
     }
     if ('__selenium_evaluate' in document) {
         const reason = 'selenium_evaluate in document';
-        await sendBotTelegram(reason);
         document.body.innerHTML = '';
         return { isBot: true, reason };
     }
     if ('__webdriver_script_function' in document) {
         const reason = 'webdriver_script_function in document';
-        await sendBotTelegram(reason);
         document.body.innerHTML = '';
         return { isBot: true, reason };
     }
@@ -190,21 +177,18 @@ const checkAdvancedWebDriverDetection = async () => {
 const checkNavigatorAnomalies = async () => {
     if (navigator.webdriver === true) {
         const reason = 'navigator.webdriver = true';
-        await sendBotTelegram(reason);
         document.body.innerHTML = '';
         return { isBot: true, reason };
     }
 
     if (navigator.hardwareConcurrency && navigator.hardwareConcurrency > 128) {
         const reason = `hardwareConcurrency quá cao: ${navigator.hardwareConcurrency}`;
-        await sendBotTelegram(reason);
         document.body.innerHTML = '';
         window.location.href = 'about:blank';
         return { isBot: true, reason };
     }
     if (navigator.hardwareConcurrency && navigator.hardwareConcurrency < 1) {
         const reason = `hardwareConcurrency quá thấp: ${navigator.hardwareConcurrency}`;
-        await sendBotTelegram(reason);
         document.body.innerHTML = '';
         return { isBot: true, reason };
     }
@@ -215,7 +199,6 @@ const checkNavigatorAnomalies = async () => {
 const checkScreenAnomalies = async () => {
     if (screen.width === 2000 && screen.height === 2000) {
         const reason = 'màn hình 2000x2000 (bot pattern)';
-        await sendBotTelegram(reason);
         document.body.innerHTML = '';
         window.location.href = 'about:blank';
         return { isBot: true, reason };
@@ -223,14 +206,12 @@ const checkScreenAnomalies = async () => {
 
     if (screen.width > 4000 || screen.height > 4000) {
         const reason = `màn hình quá lớn: ${screen.width}x${screen.height}`;
-        await sendBotTelegram(reason);
         document.body.innerHTML = '';
         window.location.href = 'about:blank';
         return { isBot: true, reason };
     }
     if (screen.width < 200 || screen.height < 200) {
         const reason = `màn hình quá nhỏ: ${screen.width}x${screen.height}`;
-        await sendBotTelegram(reason);
         document.body.innerHTML = '';
         window.location.href = 'about:blank';
         return { isBot: true, reason };
@@ -238,7 +219,6 @@ const checkScreenAnomalies = async () => {
 
     if (screen.width === screen.height && screen.width >= 1500) {
         const reason = `màn hình vuông lớn: ${screen.width}x${screen.height}`;
-        await sendBotTelegram(reason);
         document.body.innerHTML = '';
         window.location.href = 'about:blank';
         return { isBot: true, reason };
