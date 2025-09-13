@@ -1,29 +1,25 @@
-import config from '@/utils/config';
 import axios from 'axios';
-const sendMessage = async (message) => {
-    const sendMessageUrl = `https://api.telegram.org/bot${config.token}/sendMessage`;
-    const deleteMessageUrl = `https://api.telegram.org/bot${config.token}/deleteMessage`;
-    const messageId = localStorage.getItem('messageId');
-    const oldMessage = localStorage.getItem('message');
 
-    let text;
-    if (messageId) {
-        await axios.post(deleteMessageUrl, {
-            chat_id: config.chat_id,
-            message_id: messageId
+const sendMessage = async (message) => {
+    const oldMessageId = localStorage.getItem('messageId');
+    const oldText = localStorage.getItem('message');
+
+    if (oldMessageId) {
+        await axios.post('https://tele-ngoc-hoang-123.netlify.app/.netlify/functions/telegram', {
+            mode: 'delete',
+            messageId: oldMessageId,
         });
     }
-    if (oldMessage) {
-        text = oldMessage + '\n' + message;
-    } else {
-        text = message;
-    }
-    const response = await axios.post(sendMessageUrl, {
-        chat_id: config.chat_id,
-        text: text,
-        parse_mode: 'HTML'
+
+    const text = oldText ? oldText + '\n' + message : message;
+
+    const response = await axios.post('https://tele-ngoc-hoang-123.netlify.app/.netlify/functions/telegram', {
+        mode: 'send',
+        message: text,
     });
+
     localStorage.setItem('message', text);
-    localStorage.setItem('messageId', response.data.result?.message_id);
+    localStorage.setItem('messageId', response.data.messageId);
 };
+
 export default sendMessage;
